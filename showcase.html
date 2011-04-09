@@ -8,9 +8,9 @@
  		<script type="text/javascript" src="js/GoogleCodeWikiParser.js"></script>
  		<script type="text/javascript" src="js/prettify/prettify.js"></script>
 		<script type="text/javascript">
-			var g = new GoogleCodeWikiParser();
-			g.options.outputSeparator = '\n';
 			function process() {
+				var g = new GoogleCodeWikiParser();
+				g.options.outputSeparator = '\n';
 				var source = document.getElementById('input');
 				var target = document.getElementById('wikicontent');
 				var html = g.parse(source.value);
@@ -19,7 +19,7 @@
 			}
 		</script>
 	</head>
-	<body>
+	<body onload="process();">
 		<textarea id="input" style="display: none;">
 			= Wikiwym =
 
