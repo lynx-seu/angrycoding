@@ -1,0 +1,26 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head>
+		<title>Recreating Google Code Wiki</title>
+		<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+		<link type="text/css" rel="stylesheet" href="css/ph_core.css" />
+		<link type="text/css" rel="stylesheet" href="css/ph_detail.css" />
+ 		<script type="text/javascript" src="js/GoogleCodeWikiParser.js"></script>
+ 		<script type="text/javascript" src="js/prettify/prettify.js"></script>
+		<script type="text/javascript">
+			var g = new GoogleCodeWikiParser();
+			g.options.outputSeparator = '\n';
+			function process() {
+				var source = document.getElementById('input');
+				var target = document.getElementById('wikicontent');
+				var html = g.parse(source.value);
+				target.innerHTML = html;
+				prettyPrint();
+			}
+		</script>
+	</head>
+	<body>
+		<div id="wikicontent">
+		</div>
+	</body>
+</html>
