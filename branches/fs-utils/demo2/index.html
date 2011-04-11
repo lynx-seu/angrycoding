@@ -1,0 +1,71 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<title>fsUtils</title>
+		<link type="text/css" rel="stylesheet" href="css/stylesheet.css" />
+		<script type="text/javascript" src="scripts/base64.js"></script>
+		<script type="text/javascript" src="scripts/flashReplace.js"></script>
+		<script type="text/javascript">
+
+			if (!window.btoa) window.btoa = base64.encode;
+			if (!window.atob) window.atob = base64.decode;
+
+			function openFileDialogInit() {
+				var loadButton = document.getElementById('loadButton');
+				loadButton.addEventListener('onload', function(fData, fName) {
+					var textArea = document.getElementById('textarea');
+					var fileName = document.getElementById('filename');
+					var textData = window.atob(fData);
+					textArea.value = textData;
+					fileName.innerHTML = fName;
+				}.toString());
+			}
+
+			function saveFileDialogInit() {
+				var saveButton = document.getElementById('saveButton');
+				saveButton.addEventListener('onsave', function() {
+					var textArea = document.getElementById('textarea');
+					var fileName = document.getElementById('filename');
+					return {
+						'data': window.btoa(textArea.value),
+						'filename': fileName.innerHTML
+					};
+				}.toString());
+			}
+
+		</script>
+	</head>
+	<body>
+		<div class="toolbar">
+			<span class="button"><span><span>
+				<div>Load from file...</div>
+				<div id="openFileButton">
+					<script type="text/javascript" id="sidebar">
+						FlashReplace.replace("openFileButton", "scripts/fsutils.swf", 'loadButton', 900, 900, 9, {
+							'FlashVars': 'onload=openFileDialogInit&dialogType=open&fileFilter=*',
+							'wmode': 'transparent'
+					   });
+					</script>
+				</div>
+			</span></span></span><!--
+
+				prevent inserting spaces
+
+			--><span class="button"><span><span>
+				<div>Save to file...</div>
+				<div id="saveFileButton">
+					<script type="text/javascript" id="sidebar">
+						FlashReplace.replace("saveFileButton", "scripts/fsutils.swf", 'saveButton', 900, 900, 9, {
+							'FlashVars': 'onload=saveFileDialogInit&dialogType=save',
+							'wmode': 'transparent'
+						});
+					</script>
+				</div>
+			</span></span></span>
+		</div>
+		<div class="filename">[<span id="filename">untitled.txt</span>]</div>
+		<div class="editor">
+			<textarea id="textarea"></textarea>
+		</div>
+	</body>
+</html>
