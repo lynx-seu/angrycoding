@@ -44,13 +44,11 @@ package {
 					if (getData) {
 						if (getData['data']) dataForSave = getData['data'];
 						if (getData['filename']) fileNameForSave = getData['filename'];
-						if (getData && getData['bin']) {
+						if (getData) {
 							this.fileRef.save(
 								Base64.decodeToByteArray(dataForSave),
 								fileNameForSave
 							);
-						} else {
-							this.fileRef.save(dataForSave, fileNameForSave);
 						}
 					}
 				}
