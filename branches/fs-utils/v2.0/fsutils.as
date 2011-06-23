@@ -9,6 +9,7 @@ package {
 
 	public class fsutils extends Sprite {
 
+		private var square: Sprite;
 		private var settings: Object;
 		private var fileRef: FileReference;
 		private var eventListeners: Object = {};
@@ -35,11 +36,13 @@ package {
 			Security.allowDomain("*");
 			this.stage.scaleMode = StageScaleMode.NO_SCALE;
 			this.stage.align = StageAlign.TOP_LEFT;
-			var square:Sprite = new Sprite();
-			square.graphics.beginFill(0x000000, 0);
-			square.graphics.drawRect(0, 0, 1000, 1000);
-			square.graphics.endFill();
-			addChild(square);
+			this.square = new Sprite();
+			this.square.graphics.beginFill(0x000000, 0);
+			this.square.graphics.drawRect(0, 0, 1000, 1000);
+			this.square.graphics.endFill();
+			this.square.buttonMode = true;
+			this.square.mouseChildren = false;
+			addChild(this.square);
 			ExternalInterface.addCallback("setParams", this.setParams);
 			ExternalInterface.addCallback("addEventListener", this.setEventListener);
 			this.addEventListener(MouseEvent.CLICK, openDialog);
@@ -109,6 +112,8 @@ package {
 
 		public function setParams(settings: Object): void {
 			this.settings = settings;
+			if (!this.settings["cursor"]) this.settings["cursor"] = "default";
+			this.square.useHandCursor = (this.settings["cursor"] == "pointer");
 		}
 
 		public function setEventListener(sEventType: String, fEventHandler: String): void {

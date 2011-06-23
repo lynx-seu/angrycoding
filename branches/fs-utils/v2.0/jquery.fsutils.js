@@ -91,13 +91,13 @@
 			].join('?')), '', 900, 900, 9, {
 				'FlashVars': 'onload=jQuery().fsutils.init',
 				'wmode': 'transparent'
-			})).appendTo(document.documentElement).css({
+			})).css({
 				'position': 'absolute',
 				'z-index': '10000000',
 				'top': '-100000px',
 				'left': '-100000px',
 				'overflow': 'hidden'
-			}),
+			}).appendTo(document.documentElement),
 			'init': function() {
 				var flashMovie = $('*[id]', this.wrapper)[0];
 				this.wrapper.data('movie', flashMovie);
@@ -137,8 +137,10 @@
 		},
 		'openFileDialog': function(callback) {
 			this.mouseover(function() {
-				showOverlay($(this), callback, {
+				var target = $(this);
+				showOverlay(target, callback, {
 					'dialogType': 'open',
+					'cursor': target.css('cursor'),
 					'fileFilter': '*.png;*.jpg;*.gif;*.svg'
 				});
 			});
@@ -146,8 +148,10 @@
 		},
 		'saveFileDialog': function(callback) {
 			this.mouseover(function() {
-				showOverlay($(this), callback, {
-					'dialogType': 'save'
+				var target = $(this);
+				showOverlay(target, callback, {
+					'dialogType': 'save',
+					'cursor': target.css('cursor')
 				});
 			});
 			return $(this);
