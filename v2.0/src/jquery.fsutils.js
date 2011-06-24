@@ -135,13 +135,13 @@
 
 			}
 		},
-		'openFileDialog': function(callback) {
+		'openFileDialog': function(callback, filters) {
 			this.mouseover(function() {
 				var target = $(this);
 				showOverlay(target, callback, {
 					'dialogType': 'open',
 					'cursor': target.css('cursor'),
-					'fileFilter': '*.png;*.jpg;*.gif;*.svg'
+					'fileFilter': filters.join(';')
 				});
 			});
 			return $(this);
