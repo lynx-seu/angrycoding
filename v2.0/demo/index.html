@@ -1,0 +1,60 @@
+	<head>
+		<title>fsUtils - jQuery plugin demo page</title>
+		<link rel="stylesheet" href="style/stylesheet.css" type="text/css" />
+			<script type="text/javascript" src="script/base64.js"></script>
+		<script type="text/javascript" src="script/jquery.min.js"></script>
+		<script type="text/javascript" src="script/ace.js"></script>
+		<script type="text/javascript" src="script/theme-twilight.js"></script>
+		<script type="text/javascript" src="script/mode-javascript.js"></script>
+		<script type="text/javascript" src="../src/jquery.fsutils.min.js"></script>
+		<script type="text/javascript">
+			$(document).ready(function() {
+
+				var fileName = 'untitled.js';
+				var editor = ace.edit("editor");
+				editor.setTheme("ace/theme/twilight");
+				var JavaScriptMode = require("ace/mode/javascript").Mode;
+				editor.getSession().setMode(new JavaScriptMode());
+				$('.toolbar-right span').html(fileName);
+
+				$('.button').mousedown(function() {
+					$(this).addClass('button-pressed');
+				}).mouseup(function() {
+					$(this).removeClass('button-pressed');
+				});
+
+				$('.openFileDialog').openFileDialog(function(data, fname) {
+					$('.toolbar-right span').html(fileName = fname);
+					editor.getSession().setValue(atob(data));
+					setTimeout(function() { editor.gotoLine(0); }, 0);
+				}, ['*.js', '*.txt']);
+
+				$('.saveFileDialog').saveFileDialog(function() {
+					return {
+						'data': btoa(editor.getSession().getValue()),
+						'filename': fileName
+					};
+				});
+
+			});
+
+		</script>
+	</head>
+	<body>
+		<div class="toolbar">
+			<span class="button openFileDialog"><span><span>
+				<div>Load from file...</div>
+			</span></span></span><!--
+			--><span class="button saveFileDialog"><span><span>
+				<div>Save to file...</div>
+			</span></span></span>
+			<div class="toolbar-right">[<span></span>]</div>
+		</div>
+		<pre id="editor">function foo(items) {
+			var i;
+			for (i = 0; i &lt; items.length; i++) {
+				alert("Ace Rocks " + items[i]);
+			}
+		}</pre>
+	</body>
+</html>
