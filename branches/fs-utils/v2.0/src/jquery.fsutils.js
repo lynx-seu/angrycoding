@@ -86,18 +86,7 @@
 	$.fn.extend({
 		'fsutils': {
 			'startupQueue': [],
-			'wrapper': $(FlashReplace.replace(document.createElement('div'), ([
-				'script/fsutils.swf', Math.random()
-			].join('?')), '', 900, 900, 9, {
-				'FlashVars': 'onload=jQuery().fsutils.init',
-				'wmode': 'transparent'
-			})).css({
-				'position': 'absolute',
-				'z-index': '10000000',
-				'top': '-100000px',
-				'left': '-100000px',
-				'overflow': 'hidden'
-			}).appendTo(document.documentElement),
+			'wrapper': null,
 			'init': function() {
 				var flashMovie = $('*[id]', this.wrapper)[0];
 				this.wrapper.data('movie', flashMovie);
@@ -157,4 +146,20 @@
 			return $(this);
 		}
 	});
+
+	$(document).ready(function() {
+		jQuery().fsutils.wrapper = $(FlashReplace.replace(document.createElement('div'), ([
+			'script/fsutils.swf', Math.random()
+		].join('?')), 'fsutils-flash', 900, 900, 9, {
+			'FlashVars': 'onload=jQuery().fsutils.init',
+				'wmode': 'transparent'
+		})).css({
+			'position': 'absolute',
+			'z-index': '10000000',
+			'top': '-100000px',
+			'left': '-100000px',
+			'overflow': 'hidden'
+		}).appendTo(document.body);
+	});
+
 })(jQuery);
