@@ -41,7 +41,7 @@
 		</script>
 	</head>
 	<body>
-		<div class="toolbar">
+		<div class="toolbar not-ie">
 			<span class="button openFileDialog"><span><span>
 				<div>Load from file...</div>
 			</span></span></span><!--
@@ -50,11 +50,15 @@
 			</span></span></span>
 			<div class="toolbar-right">[<span></span>]</div>
 		</div>
-		<pre id="editor">function foo(items) {
+		<pre id="editor" class="not-ie">function foo(items) {
 			var i;
 			for (i = 0; i &lt; items.length; i++) {
 				alert("Ace Rocks " + items[i]);
 			}
 		}</pre>
+		<div class="only-ie">
+			<div>This page can only be viewed in non - IE browsers.</div>
+			<div>That is because code editor doesn't work in Microsoft "browsers".</div>
+		</div>
 	</body>
 </html>
