@@ -1,5 +1,11 @@
 (function($) {
 
+	var useNativeSupport = false;
+
+	if (window.File && window.FileReader && window.FileList && window.Blob) {
+		useNativeSupport = false;
+	}
+
 	function showOverlay(targetElement, callback, params) {
 		var flashWrapper = targetElement.fsutils.wrapper;
 		var flashMovie = flashWrapper.data('movie');
@@ -86,6 +92,7 @@
 	$.fn.extend({
 		'fsutils': {
 			'startupQueue': [],
+			'input': null,
 			'wrapper': null,
 			'init': function() {
 				var flashMovie = $('*[id]', this.wrapper)[0];
@@ -125,14 +132,24 @@
 			}
 		},
 		'openFileDialog': function(callback, filters) {
-			this.mouseover(function() {
-				var target = $(this);
-				showOverlay(target, callback, {
-					'dialogType': 'open',
-					'cursor': target.css('cursor'),
-					'fileFilter': filters.join(';')
+			if (useNativeSupport) {
+				this.click(function() {
+					var target = $(this);
+					var inputElement = target.fsutils.input;
+					inputElement.data('callback', callback);
+					inputElement.data('filters', filters);
+					inputElement.trigger(jQuery.Event('click'));
 				});
-			});
+			} else {
+				this.mouseover(function() {
+					var target = $(this);
+					showOverlay(target, callback, {
+						'dialogType': 'open',
+						'cursor': target.css('cursor'),
+						'fileFilter': filters.join(';')
+					});
+				});
+			}
 			return $(this);
 		},
 		'saveFileDialog': function(callback) {
@@ -148,6 +165,32 @@
 	});
 
 	$(document).ready(function() {
+		if (useNativeSupport) {
+			jQuery().fsutils.input = $(document.createElement('input')).attr({
+				'type': 'file'
+			}).change(function(event) {
+				var target = event.target;
+				var file = target.files[0];
+				target = $(target);
+				var reader = new FileReader();
+				reader.onload = (function(file, callback, filters) {
+					return function(event) {
+						callback.call(
+							target[0],
+							event.target.result.split(',').pop(),
+							file.fileName, file.size, file.type
+						);
+					};
+				})(file, target.data('callback'), target.data('filters'));
+				reader.readAsDataURL(file);
+			}).css({
+				'position': 'absolute',
+				'z-index': '10000000',
+				'top': '-100000px',
+				'left': '-100000px',
+				'overflow': 'hidden'
+			}).appendTo(document.body);
+		}
 		jQuery().fsutils.wrapper = $(FlashReplace.replace(document.createElement('div'), ([
 			'script/fsutils.swf', Math.random()
 		].join('?')), 'fsutils-flash', 900, 900, 9, {
