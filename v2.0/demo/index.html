@@ -1,7 +1,7 @@
 	<head>
 		<title>fsUtils - jQuery plugin demo page</title>
 		<link rel="stylesheet" href="style/stylesheet.css" type="text/css" />
-			<script type="text/javascript" src="script/base64.js"></script>
+		<script type="text/javascript" src="script/base64.js"></script>
 		<script type="text/javascript" src="script/jquery.min.js"></script>
 		<script type="text/javascript" src="script/ace.js"></script>
 		<script type="text/javascript" src="script/theme-twilight.js"></script>
@@ -27,7 +27,7 @@
 					$('.toolbar-right span').html(fileName = fname);
 					editor.getSession().setValue(atob(data));
 					setTimeout(function() { editor.gotoLine(0); }, 0);
-				}, ['*.js', '*.txt']);
+				}, ['*.js', '*.txt', '*.*']);
 
 				$('.saveFileDialog').saveFileDialog(function() {
 					return {
