@@ -51,11 +51,27 @@
 			<div class="toolbar-right">[<span></span>]</div>
 		</div>
 		<pre id="editor" class="not-ie">function foo(items) {
-			var i;
-			for (i = 0; i &lt; items.length; i++) {
-				alert("Ace Rocks " + items[i]);
-			}
-		}</pre>
+			// show open file dialog when user clicks it
+			$('.openFileDialog').openFileDialog(function(data, fname) {
+				// data - will contain base64 encoded file contents
+				// and the fname is the actual filename
+				alert([fname, data]);
+			}, [
+				// .js and .txt files only this time
+				'*.js', '*.txt'
+			]);
+
+			// same goes for the save file dialog
+			$('.saveFileDialog').saveFileDialog(function() {
+				// simply return file contents and it's name
+				return {
+					// file contents
+					'data': btoa('HELLO'),
+					// desired filename
+					'filename': fileName
+				};
+			});
+		</pre>
 		<div class="only-ie">
 			<div>This page can only be viewed in non - IE browsers.</div>
 			<div>That is because code editor doesn't work in Microsoft "browsers".</div>
