@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="build" default="build" basedir=".">
+
+	<!-- path to the Saxon processor -->
+	<property name="path.saxon" location="lib/java/saxon9.jar" />
+	<!-- path to tagsoup parser -->
+	<property name="path.tagsoup" location="lib/java/tagsoup-1.2.jar" />
+	<!-- path to Mozilla Rhino JavaScript engine -->
+	<property name="path.rhino" location="lib/java/js.jar" />
+	<!-- path to xsr extension library -->
+	<property name="path.xsr" location="lib/java/xsr.jar" />
+	<!-- path to google closure compiler -->
+	<property name="path.compiler" location="lib/java/compiler.jar" />
+
+	<!-- classpath -->
+	<property name="classpath" location="${path.saxon}:${path.tagsoup}:${path.xsr}:${path.rhino}:${path.compiler}" />
+
+	<target name="build" description="build">
+		<exec executable="java">
+			<arg value="-classpath" />
+			<arg value="${classpath}" />
+			<arg value="net.sf.saxon.Transform" />
+			<arg value="-x:org.ccil.cowan.tagsoup.Parser" />
+			<arg line="-it:main" />
+			<arg line="-xsl:build.xsl" />
+			<arg line="-o:output/index.html" />
+		</exec>
+	</target>
+
+</project>
