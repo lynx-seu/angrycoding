@@ -227,10 +227,20 @@ var XSLTProcessor = (function() {
 				'resolve': function(uriResolver) {
 					return function(href, base) {
 						if (this.callback) {
-							var resolvedUri = this.callback(href, base);
-							if (isString(resolvedUri)) return (
-								new Java.StreamSource(resolvedUri)
-							);
+							var source = this.callback(href, base);
+							if (isString(source)) {
+								return new Java.StreamSource(source);
+							} else if (isXML(source)) {
+								source = source.toXMLString();
+								return new Java.StreamSource(
+									new Java.StringReader(source)
+								);
+							} else {
+								source = value2xml(source);
+								return new Java.StreamSource(
+									new Java.StringReader(source)
+								);
+							}
 						}
 						// use standard uri resolver
 						return uriResolver.resolve(href, base);
