@@ -1,0 +1,121 @@
+<script type="text/javascript">
+
+	var cols = 8;
+	var rows = 20;
+	var tileWidth = 100;
+	var tileHeight = 100;
+	var tileSpacing = 5;
+
+	window.onload = function() {
+		window.onresize = function() {
+
+			var cols = Math.floor((document.body.offsetWidth + 20) / (tileWidth + tileSpacing));
+
+			var tiles = [
+				{"name": "1", "width": 3, "height": 3, "url": 'file1.html'},
+				{"name": "2", "width": 1, "height": 1},
+				{"name": "3", "width": 1, "height": 1},
+				{"name": "4", "width": 1, "height": 1},
+				{"name": "5", "width": 2, "height": 1},
+				{"name": "6", "width": 2, "height": 1},
+				{"name": "7", "width": 1, "height": 1, "url": 'file2.html'},
+				{"name": "8", "width": 1, "height": 1},
+				{"name": "9", "width": 1, "height": 1},
+				{"name": "10", "width": 1, "height": 1},
+				{"name": "11", "width": 1, "height": 1},
+				{"name": "12", "width": 2, "height": 1},
+				{"name": "13", "width": 1, "height": 1},
+				{"name": "14", "width": 1, "height": 1},
+				{"name": "15", "width": 1, "height": 1},
+				{"name": "16", "width": 1, "height": 1},
+				{"name": "17", "width": 2, "height": 1},
+				{"name": "18", "width": 2, "height": 1},
+				{"name": "19", "width": 1, "height": 1}
+			];
+
+			var output = [];
+			var emptyCells = {};
+
+			for (var i = 0; i < rows; i++) {
+				for (var j = 0; j < cols; j++) {
+					var hash = [i, j].join('.');
+					emptyCells[hash] = [i, j];
+				}
+			}
+
+			function removeRect(left, top, width, height) {
+				for (var i = top; i < top + height; i++) {
+					for (var j = left; j < left + width; j++) {
+						var hash = [i, j].join('.');
+						delete emptyCells[hash];
+					}
+				}
+			}
+
+			function canFitRect(left, top, width, height) {
+				for (var i = top; i < top + height; i++) {
+					for (var j = left; j < left + width; j++) {
+						var hash = [i, j].join('.');
+						if (!emptyCells[hash]) return false;
+					}
+				}
+				return true;
+			}
+
+			var waiting = [];
+
+			while (tiles.length) {
+				var tile = tiles.shift();
+
+				var emptyCell = null;
+				for (var key in emptyCells) {
+					emptyCell = emptyCells[key];
+					break;
+				}
+
+				if (canFitRect(
+					emptyCell[1],
+					emptyCell[0],
+					tile.width,
+					tile.height)) {
+
+					while (waiting.length) {
+						tiles.unshift(waiting.shift());
+					}
+
+					tile.left = emptyCell[1];
+					tile.top = emptyCell[0];
+					output.push(tile);
+
+					removeRect(
+						emptyCell[1],
+						emptyCell[0],
+						tile.width,
+						tile.height
+					);
+				} else {
+					waiting.push(tile);
+				}
+			}
+
+			document.body.innerHTML = '';
+
+			for (var c = 0; c < output.length; c++) {
+				var tile = output[c];
+				var tileEl = document.createElement('div');
+				tileEl.style.position = 'absolute';
+				tileEl.style.left = (tile.left * tileWidth + tile.left * tileSpacing) + 'px';
+				tileEl.style.top = (tile.top * tileHeight + tile.top * tileSpacing) + 'px';
+				tileEl.style.width = (tile.width * tileWidth + (tile.width - 1) * tileSpacing) + 'px';
+				tileEl.style.height = (tile.height * tileHeight + (tile.height - 1) * tileSpacing) + 'px';
+				tileEl.style.backgroundColor = 'red';
+				tileEl.style.opacity = 0.5;
+				tileEl.innerHTML = tile.name;
+				document.body.appendChild(tileEl);
+			}
+		}
+		window.onresize();
+	}
+
+
+</script>
