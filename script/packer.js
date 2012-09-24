@@ -1,134 +1,79 @@
-/******************************************************************************
+(function() {
 
-This is a very simple binary tree based bin packing algorithm that is initialized
-with a fixed width and height and will fit each block into the first node where
-it fits and then split that node into 2 parts (down and right) to track the
-remaining whitespace.
+	function removeRect(cells, left, top, width, height) {
+		for (var i = top; i < top + height; i++) {
+			for (var j = left; j < left + width; j++) {
+				delete cells[i + '.' + j];
+			}
+		}
+	}
 
-Best results occur when the input blocks are sorted by height, or even better
-when sorted by max(width,height).
+	function canFitRect(cells, left, top, width, height) {
+		for (var i = top; i < top + height; i++) {
+			for (var j = left; j < left + width; j++) {
+				if (!cells[i + '.' + j]) return false;
+			}
+		}
+		return true;
+	}
 
-Inputs:
-------
+	function Packer(width, height, tiles) {
 
-  w:       width of target rectangle
-  h:      height of target rectangle
-  blocks: array of any objects that have .w and .h attributes
+		var maxWidth = 0, maxHeight = 0;
+		var output = [], waiting = [], emptyCells = {};
+		var tile, emptyCell, hash, mWidth, mHeight;
 
-Outputs:
--------
+		for (var i = 0; i < height; i++) {
+			for (var j = 0; j < width; j++) {
+				emptyCells[i + '.' + j] = [i, j];
+			}
+		}
 
-  marks each block that fits with a .fit attribute pointing to a
-  node with .x and .y coordinates
+		while (tiles.length) {
+			tile = tiles.shift();
+			emptyCell = null;
 
-Example:
--------
+			for (hash in emptyCells) {
+				emptyCell = emptyCells[hash];
+				break;
+			}
 
-  var blocks = [
-    { w: 100, h: 100 },
-    { w: 100, h: 100 },
-    { w:  80, h:  80 },
-    { w:  80, h:  80 },
-    etc
-    etc
-  ];
+			if (!emptyCell) continue;
 
-  var packer = new Packer(500, 500);
-  packer.fit(blocks);
+			if (!canFitRect(emptyCells,
+				emptyCell[1], emptyCell[0],
+				tile['width'], tile['height'])) {
+				waiting.push(tile);
+				continue;
+			}
 
-  for(var n = 0 ; n < blocks.length ; n++) {
-    var block = blocks[n];
-    if (block.fit) {
-      Draw(block.fit.x, block.fit.y, block.w, block.h);
-    }
-  }
+			while (waiting.length) {
+				tiles.unshift(waiting.shift());
+			}
 
+			tile['left'] = emptyCell[1];
+			tile['top'] = emptyCell[0];
+			mWidth = tile['left'] + tile['width'];
+			mHeight = tile['top'] + tile['height'];
+			if (mWidth > maxWidth) maxWidth = mWidth;
+			if (mHeight > maxHeight) maxHeight = mHeight;
 
-******************************************************************************/
+			output.push(tile);
 
-Packer = {};
+			removeRect(emptyCells,
+				emptyCell[1], emptyCell[0],
+				tile['width'], tile['height']
+			);
 
-    Packer.removeRect = function(cells, left, top, width, height) {
-      for (var i = top; i < top + height; i++) {
-        for (var j = left; j < left + width; j++) {
-          var hash = (i + '.' + j);
-          delete cells[hash];
-        }
-      }
-    };
+		}
 
-      Packer.canFitRect = function(cells, left, top, width, height) {
-        for (var i = top; i < top + height; i++) {
-          for (var j = left; j < left + width; j++) {
-            var hash = (i + '.' + j);
-            if (!cells[hash]) return false;
-          }
-        }
-        return true;
-      };
+		return {
+			width: maxWidth,
+			height: maxHeight,
+			items: output
+		};
+	};
 
-    Packer.pack = function(width, height, tiles) {
+	window['Packer'] = Packer;
 
-        var maxWidth = 0;
-        var maxHeight = 0;
-
-        var output = [];
-        var waiting = [];
-        var emptyCells = {};
-
-        for (var i = 0; i < height; i++) {
-          for (var j = 0; j < width; j++) {
-            var hash = (i + '.' + j);
-            emptyCells[hash] = [i, j];
-          }
-        }
-
-        while (tiles.length) {
-          var tile = tiles.shift();
-          var emptyCell = null;
-
-          for (var hash in emptyCells) {
-            emptyCell = emptyCells[hash];
-            break;
-          }
-
-          if (Packer.canFitRect(
-            emptyCells,
-            emptyCell[1],
-            emptyCell[0],
-            tile['width'],
-            tile['height'])) {
-
-            while (waiting.length) {
-              tiles.unshift(waiting.shift());
-            }
-
-            tile['left'] = emptyCell[1];
-            tile['top'] = emptyCell[0];
-
-            var mw = tile['left'] + tile['width'];
-            var mh = tile['top'] + tile['height'];
-
-            if (mw > maxWidth) maxWidth = mw;
-            if (mh > maxHeight) maxHeight = mh;
-
-            output.push(tile);
-
-            Packer.removeRect(
-              emptyCells,
-              emptyCell[1],
-              emptyCell[0],
-              tile['width'],
-              tile['height']
-            );
-          } else {
-            waiting.push(tile);
-          }
-        }
-
-        return {
-          width: maxWidth,
-          height: maxHeight,
-          items: output
-        };
-      };
+})();
