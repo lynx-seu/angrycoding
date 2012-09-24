@@ -1,0 +1,172 @@
+html, body {
+	margin: 0px;
+	padding: 0px;
+	font-size: 13px;
+	font-family: Verdana, sans-serif;
+}
+
+.header {
+	padding-top: 14px;
+	padding-bottom: 14px;
+}
+
+.wrapper {
+	margin: auto;
+	width: 980px;
+	position: relative;
+}
+
+.menu {
+	margin: 0px;
+	padding: 0px;
+	padding-left: 14px;
+	padding-right: 14px;
+	border-radius: 6px;
+	margin-bottom: 14px;
+	background-color: #00A558;
+}
+
+.menu-item {
+	color: white;
+	cursor: pointer;
+	padding-top: 8px;
+	padding-bottom: 8px;
+	margin-right: 14px;
+	padding-right: 14px;
+	display: inline-block;
+	border-right: 1px solid #00763B;
+	text-decoration: underline;
+}
+
+.menu-item-active {
+	text-decoration: none;
+}
+
+.gadget-board {
+	margin: auto;
+	overflow: hidden;
+	position: relative;
+}
+
+.gadget-board-opened .gadget {
+	opacity: 0.6;
+}
+
+.gadget-container {
+	display: none;
+	position: relative;
+}
+
+.gadget-container-active {
+	display: block;
+}
+
+.gadget {
+	overflow: hidden;
+	cursor: pointer;
+	position: absolute;
+	border-radius: 2px;
+	background-color: #CDCDCD;
+}
+
+.gadget-board-opened .gadget:hover,
+.gadget-board-opened .gadget-hovered,
+.gadget-board-opened .gadget-opened {
+	opacity: 1;
+}
+
+.gadget-opened {
+	z-index: 150000;
+}
+
+.gadget-overlay {
+	z-index: 4000;
+}
+
+.gadget-window {
+	width: 100%;
+	display: none;
+	z-index: 10000;
+	position: absolute;
+}
+
+.gadget-window-opened {
+	display: block;
+}
+
+.gadget-window-pointer {
+	width: 0px;
+	height: 0px;
+	display: none;
+	left: -30px;
+	z-index: -1;
+	position: relative;
+}
+
+.gadget-window-pointer-top {
+	margin-top: 5px;
+	margin-bottom: -25px;
+	border-left: 30px solid transparent;
+	border-right: 30px solid transparent;
+	border-bottom: 30px solid #333333;
+}
+
+.gadget-window-pointer-bottom {
+	margin-bottom: 5px;
+	margin-top: -25px;
+	border-left: 30px solid transparent;
+	border-right: 30px solid transparent;
+	border-top: 30px solid #333333;
+}
+
+.gadget-window-opened-top
+.gadget-window-pointer-top,
+.gadget-window-opened-bottom
+.gadget-window-pointer-bottom {
+	display: block;
+}
+
+.gadget-window-outer-wrapper {
+	margin-top: 7px;
+	margin-bottom: 7px;
+	position: relative;
+	padding-top: 3px;
+	padding-bottom: 3px;
+}
+
+.gadget-window-border {
+	top: 0px;
+	left: 0px;
+	right: 0px;
+	bottom: 0px;
+	position: absolute;
+	background-color: white;
+	border-top: 1px solid gray;
+	border-bottom: 1px solid gray;
+}
+
+.gadget-window .gadget-window-close,
+.gadget-expanded .gadget-window-close {
+	display: block;
+}
+
+.gadget-window-inner-wrapper {
+	position: relative;
+	background-repeat: repeat;
+	background-position: top left;
+	background-image: url('../media/background.png');
+}
+
+.gadget-window-content {
+	color: white;
+	padding-top: 20px;
+	padding-bottom: 20px;
+}
+
+.footer {
+	height: 194px;
+	margin-top: 10px;
+	background-repeat: no-repeat;
+	background-position: center center;
+	background-image: url('../media/footer.png');
+}
