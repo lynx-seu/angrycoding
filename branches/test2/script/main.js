@@ -1,5 +1,5 @@
 var resizeTimer = null;
-var resizeDelay = 200;
+var resizeDelay = 300;
 var animationDelay = 300;
 var boardMaxWidth = 10;
 var animationEasing = 'easeOutExpo';
@@ -250,44 +250,47 @@ documentObj.ready(function() {
 	function setBoardSize(cols, rows) {
 		gadgetBoardSettings.cols = cols;
 		gadgetBoardSettings.rows = rows;
-
+		var top, left, width, height;
+		var container, gadgets, gadget;
+		var prevGadgetObj, currGadgetObj;
+		var containers = gadgetBoardSettings.containers;
 		var newBoardWidth = cols * gadgetWidth;
 		newBoardWidth += (cols - 1) * gadgetSpacing;
 		gadgetBoard.animate({width: newBoardWidth}, animationDelay, animationEasing);
-
-		var containers = gadgetBoardSettings.containers;
 		for (var i = 0; i < containers.length; i++) {
-			var container = containers[i];
-			var gadgets = [].concat(container.gadgets);
-			var packed = Packer.pack(cols, rows, gadgets);
+			prevGadgetObj = null;
+			container = containers[i];
+			gadgets = [].concat(container.gadgets);
+			gadgets = Packer(cols, rows, gadgets);
+			container = $('.gadget-container-' + container.name);
+			var newContainerHeight = gadgets.height * gadgetHeight;
+			newContainerHeight += (gadgets.height - 1) * gadgetSpacing;
+			container.animate({height: newContainerHeight}, animationDelay, animationEasing);
+			gadgets = gadgets.items;
+			while (gadgets.length) {
+				gadget = gadgets.shift();
+				currGadgetObj = $('#' + gadget.id);
+				if (currGadgetObj.length) {
+					top = gadget.top;
+					left = gadget.left;
+					width = gadget.width;
+					height = gadget.height;
+					if (prevGadgetObj) {
+						currGadgetObj.insertAfter(prevGadgetObj);
+					}
+					prevGadgetObj = currGadgetObj;
 
-			var containerObj = $('.gadget-container-' + container.name);
-			var newContainerHeight = packed.height * gadgetHeight;
-			newContainerHeight += (packed.height - 1) * gadgetSpacing;
-			containerObj.animate({height: newContainerHeight}, animationDelay, animationEasing);
-
-			var items = packed.items;
-			var prevGadget = null;
-			for (var j = 0; j < items.length; j++) {
-				var gadget = items[j];
-				var gadgetObj = $('#' + gadget.id);
-				if (gadgetObj.length) {
-
-					if (prevGadget) gadgetObj.insertAfter(prevGadget);
-
-					prevGadget = gadgetObj;
-
-					gadgetObj[0].className = [
+					currGadgetObj[0].className = [
 						'gadget',
-						'gadget-row-' + range(gadget.top, gadget.top + gadget.height - 1).join(' gadget-row-'),
-						'gadget-cell-' + range(gadget.left, gadget.left + gadget.width - 1).join(' gadget-cell-')
+						'gadget-row-' + range(top, top + height - 1).join(' gadget-row-'),
+						'gadget-cell-' + range(left, left + width - 1).join(' gadget-cell-')
 					].join(' ');
 
-					gadgetObj.data('settings', gadget);
-					gadgetObj.animate({
-						top: gadget.top * gadgetHeight + gadget.top * gadgetSpacing,
-						left: gadget.left * gadgetWidth + gadget.left * gadgetSpacing
+					currGadgetObj.data('settings', gadget).animate({
+						top: top * gadgetHeight + top * gadgetSpacing,
+						left: left * gadgetWidth + left * gadgetSpacing
 					}, animationDelay, animationEasing);
+
 				} else {
 					// console.error('foo');
 				}
@@ -297,7 +300,7 @@ documentObj.ready(function() {
 
 	}
 
-	function resizeEvent() {
+	function resizeGadgetBoard() {
 		var documentWidth = $(window).outerWidth();
 		var boardCols = documentWidth / (gadgetWidth + gadgetSpacing);
 		boardCols = Math.floor(boardCols);
@@ -307,7 +310,7 @@ documentObj.ready(function() {
 		if (!openedGadget.length) {
 			setBoardSize(boardCols, 10);
 		} else closeGadget(openedGadget, function() {
-			resizeEvent();
+			resizeGadgetBoard();
 		});
 	}
 
@@ -350,9 +353,9 @@ documentObj.ready(function() {
 
 	$(window).on('resize', function() {
 		clearTimeout(resizeTimer);
-		resizeTimer = setTimeout(resizeEvent, resizeDelay);
+		resizeTimer = setTimeout(resizeGadgetBoard, resizeDelay);
 	});
 
-	documentObj.ready(resizeEvent);
+	resizeGadgetBoard();
 
 });
